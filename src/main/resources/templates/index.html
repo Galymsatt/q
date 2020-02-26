@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layouts/main.html">
+<title layout:fragment="title">News</title>
+<div layout:fragment = "contentPart">
+
+    <div class="col-5 mt-5" sec:authorize="hasRole('ROLE_MODERATOR')">
+        <h5 align="center">ADD POST</h5>
+        <form th:action="${'/addPost'}" method="post">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">TITLE</label>
+                <input type="text" name="title" class="form-control" id="exampleFormControlInput1">
+            </div>
+            <div class="form-group">
+                <label>SHORT CONTENT</label>
+                <textarea class="form-control" name="shortContent" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label>CONTENT</label>
+                <textarea class="form-control" name="content" rows="3"></textarea>
+            </div>
+            <div style="text-align: right">
+                <button class="btn btn-success html-editor-align-right">ADD POST</button>
+            </div>
+        </form>
+    </div>
+
+<hr>
+    <div class="col-8 mt-4">
+        <h5 class="mb-3" align="center">NEWS</h5>
+
+        <div class="jumbotron" th:each="post : ${allNews}">
+            <h1 class="display-4" th:text="${post.title}"></h1>
+            <p class="lead" th:text="${post.shortContent}"></p>
+            <hr class="my-4">
+            <p>Author: <span th:text="${post.author.name}"></span>, at <span th:text="${post.postDate}"></span></p>
+            <a class="btn btn-primary btn-lg" th:href="@{'newsPage/'+${post.id}}" role="button">Learn more</a>
+        </div>
+    </div>
+
+</div>
+</html>

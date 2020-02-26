@@ -1,0 +1,129 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layouts/main.html">
+<title layout:fragment="title">News Post</title>
+<div layout:fragment = "contentPart">
+
+    <div class="col-8 mt-4">
+        <h5 class="mb-3" align="center">POST</h5>
+
+        <div class="jumbotron">
+            <h1 class="display-4" th:text="${post.title}"></h1>
+            <p class="lead" th:text="${post.shortContent}"></p>
+            <p class="lead" th:text="${post.content}"></p>
+            <hr class="my-4">
+            <p>Author: <span th:text="${post.author.name}"></span>, at <span th:text="${post.postDate}"></span></p>
+
+            <div class="row float-right" sec:authorize="hasRole('ROLE_MODERATOR')">
+
+                <form th:action="${'/deletePost'}" method="post">
+                    <input type="hidden" name="id" th:value="${post.id}">
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </form>
+
+                <button type="button" class="btn btn-outline-success ml-3" data-toggle="modal" data-target="#exampleModalCenter2">
+                    Edit
+                </button>
+                <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form th:action="${'/editPost'}" method="post">
+                                <input type="hidden" name="id" th:value="${post.id}">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>TITLE</label>
+                                        <input type="text" name="title" class="form-control" th:placeholder="${post.title}" th:value="${post.title}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SHORT CONTENT</label>
+                                        <textarea class="form-control" name="shortContent" rows="2" th:placeholder="${post.shortContent}" th:text="${post.shortContent}"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>CONTENT</label>
+                                        <textarea class="form-control" name="content" rows="3" th:placeholder="${post.content}" th:text="${post.content}"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                </div>
+
+            </div>
+
+
+
+            <div sec:authorize="hasRole('ROLE_USER')">
+                <form th:action="${'/addComment'}" method="post">
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                    <div class="form-group">
+                        <label>YOUR COMMENT</label>
+                        <textarea class="form-control" name="comment" rows="3"></textarea>
+                    </div>
+                    <div style="text-align: right">
+                        <button class="btn btn- success html-editor-align-right">ADD COMMENT</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="comments" id="comments">
+                <h3 class="mb-2">Comments</h3>
+
+                <div class="comment mt-2 mb-2 row">
+                        <div class="comment-content col-md-11" th:each="comment : ${allComments}">
+                            <h6 class="small comment-meta">Author: <span th:text="${comment.author.name}">Sebastian</span>, at <span th:text="${comment.postDate}">Seba</span></h6>
+                            <div class="comment-body">
+
+                                <p th:unless="${(adam!=null and adam.equals(comment.author))}" th:text="${comment.comment}">
+                                    <!--#authorization.expression('hasRole(''ROLE_MODERATOR'')')-->
+                                    <!--<h6 th:text="${#authentication.name}"></h6>-->
+                                </p>
+
+                                <!--<div sec:authorize="hasAnyRole('ROLE_USER', 'ROLE_MODERATOR')">-->
+                                <!--<form th:action="${'/changeComment'}" method="post" th:if="${adam!=null and adam.equals(comment.author)}">-->
+                                    <form th:action="${'/changeComment'}" method="post" th:if="${#authentication.name.equals(comment.author.email)}"><!--New thing #authentication., useful-->
+                                        <input type="hidden" name="postId" th:value="${post.id}">
+                                        <input type="hidden" name="comment_id" th:value="${comment.id}">
+                                        <div class="form-group">
+                                            <textarea class="form-control-plaintext" name="changedComment" rows="2" placeholder="${comment.comment}" th:text="${comment.comment}"></textarea>
+                                        </div>
+                                        <div style="text-align: right">
+                                            <button class="btn btn-outline-success html-editor-align-right mb-2">CHANGE COMMENT</button>
+                                        </div>
+                                    </form>
+                                    <form th:action="@{'/deleteComment'}" method="post"  th:if="${#authorization.expression('hasRole(''ROLE_MODERATOR'')') or (adam!=null and adam.equals(comment.author))}">
+                                        <input type="hidden" name="postId" th:value="${post.id}">
+                                        <input type="hidden" name="comment_id" th:value="${comment.id}">
+                                        <div style="text-align: right">
+                                            <button class="btn btn-outline-danger html-editor-align-right ml-1">DELETE COMMENT</button>
+                                        </div>
+                                    </form>
+
+                                <!--</div>-->
+
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+
+    </div>
+
+
+</div>
+</html>

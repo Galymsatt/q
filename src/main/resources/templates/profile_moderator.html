@@ -1,0 +1,44 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layouts/main.html">
+<title layout:fragment="title">Profile</title>
+<div layout:fragment = "contentPart">
+
+    <h5 align="center">LIST OF USERS</h5>
+    <br>
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Email</th>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Blocking</th>
+            <th scope="col">Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${allUsers}">
+            <th scope="row" th:text="${u.id}"></th>
+            <th th:text="${u.email}"></th>
+            <td th:text="${u.name}"></td>
+            <td th:text="${u.surname}"></td>
+            <td>
+                <form th:action="${'/blockUser'}" th:if="${u.isActive and not u.roles.contains(admin) and not u.roles.contains(moderator)}" method="post">
+                    <input type="hidden" name="id" th:value="${u.id}">
+                    <button type="submit" class="btn btn-outline-danger">Block</button>
+                </form>
+                <form th:action="${'/unBlockUser'}" th:unless="${u.isActive}" method="post">
+                    <input type="hidden" name="id" th:value="${u.id}">
+                    <button type="submit" class="btn btn-outline-success">UnBlock</button>
+                </form>
+            </td>
+            <td th:text="${u.roles}"></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+</html>

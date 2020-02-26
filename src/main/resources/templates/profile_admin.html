@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layouts/main.html">
+<title layout:fragment="title">Profile</title>
+<div layout:fragment = "contentPart">
+
+
+
+
+    <br>
+    <h5 align="center">LIST OF USERS</h5>
+    <br>
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Email</th>
+            <th scope="col">Name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Blocking</th>
+            <th scope="col">Refresh password</th>
+            <th scope="col">Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${allUsers}">
+            <th scope="row" th:text="${u.id}"></th>
+            <th th:text="${u.email}"></th>
+            <td th:text="${u.name}"></td>
+            <td th:text="${u.surname}"></td>
+            <td>
+                <form th:action="${'/blockUser'}" th:if="${u.isActive and not u.roles.contains(admin)}" method="post">
+                    <input type="hidden" name="id" th:value="${u.id}">
+                    <button type="submit" class="btn btn-outline-danger">Block</button>
+                </form>
+                <form th:action="${'/unBlockUser'}" th:unless="${u.isActive}" method="post">
+                    <input type="hidden" name="id" th:value="${u.id}">
+                    <button type="submit" class="btn btn-outline-success">UnBlock</button>
+                </form>
+            </td>
+            <td>
+                <button th:if="${u.roles.contains(moderator)}" type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalCenter2">
+                    Refresh
+                </button>
+
+                <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Refresh password</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form th:action="${'/refPassword'}" method="post">
+                            <div class="modal-body">
+                                    <div class="form-group">
+                                        <input type="hidden" name="id" th:value="${u.id}">
+                                        <label for="recipient-name" class="col-form-label">New password:</label>
+                                        <input type="text" name="password" class="form-control" id="recipient-name">
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Refresh</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td th:text="${u.roles}"></td>
+        </tr>
+        </tbody>
+    </table>
+        <form th:action="${'/adminAdd'}"  method="get">
+            <div class="form-group row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary float-right">ADD USER/MODERATOR</button>
+                </div>
+            </div>
+        </form>
+
+
+        </div>
+    </div>
+</div>
+</html>

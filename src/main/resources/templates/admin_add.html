@@ -1,0 +1,65 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorator="layouts/main.html">
+<title layout:fragment="title">ADD USER/MODERATOR</title>
+<div layout:fragment = "contentPart">
+
+    <div class="col-5">
+        <h5 align="center">ADD USER/MODERATOR</h5>
+        <br>
+        <form th:action="@{'/addUserModerator'}" method="post">
+            <input type="hidden" name="act" value="register">
+            <div class="form-group row mt-3" >
+                <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="text" name="email" class="form-control" id="inputEmail3" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" name="password" class="form-control" id="inputPassword3" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword3" class="col-sm-4 col-form-label">Re-Password</label>
+                <div class="col-sm-8">
+                    <input type="password" name="re-password" class="form-control" placeholder="Re-Password">
+                </div>
+            </div>
+            <div class="form-group row mt-3" >
+                <label class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" name="name" class="form-control" placeholder="Name">
+                </div>
+            </div>
+            <div class="form-group row mt-3" >
+                <label class="col-sm-2 col-form-label">Surname</label>
+                <div class="col-sm-10">
+                    <input type="text" name="surName" class="form-control" placeholder="Surname">
+                </div>
+            </div>
+            <div class="form-check row">
+                <input class="form-check-input" type="checkbox" name="USER" value="1" id="defaultCheck1">
+                <label class="form-check-label" for="defaultCheck1">
+                    USER
+                </label>
+            </div>
+            <div class="form-check row">
+                <input class="form-check-input" type="checkbox" name="MODERATOR" value="1">
+                <label class="form-check-label" for="defaultCheck1">
+                    MODERATOR
+                </label>
+            </div>
+            <div class="form-group row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary float-right">ADD USER/MODERATOR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <br>
+
+</div>
+</html>
